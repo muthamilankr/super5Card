@@ -303,7 +303,8 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                 discardPile = nextDiscardPile, 
                 currentPlayerIndex = nextIdx, 
                 statusMessage = "${updatedPlayers[nextIdx].name}'s turn.",
-                pendingDroppedCard = null
+                pendingDroppedCard = null,
+                pendingPlayerIndex = null
             )
         } else {
             // No match found in the dropped set, must draw
@@ -311,7 +312,8 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             currentState.copy(
                 players = updatedPlayers, 
                 statusMessage = "${updatedPlayer.name} must draw.",
-                pendingDroppedCard = cards.last() 
+                pendingDroppedCard = cards.last(),
+                pendingPlayerIndex = playerIndex
             )
         }
         
@@ -353,7 +355,8 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             discardPile = newDiscardPile, 
             currentPlayerIndex = nextIdx, 
             statusMessage = "${updatedPlayers[nextIdx].name}'s turn.",
-            pendingDroppedCard = null
+            pendingDroppedCard = null,
+            pendingPlayerIndex = null
         )
         _gameState.value = nextState
         if (isHost) broadcastState(nextState) else sendAction(NetworkAction.Draw(fromDeck))

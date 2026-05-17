@@ -36,6 +36,7 @@ data class GameState(
     var discardPile: List<Card>,
     var wildJoker: Card?,
     var pendingDroppedCard: Card? = null,
+    var pendingPlayerIndex: Int? = null,
     var currentPlayerIndex: Int = 0,
     var roundsPlayed: Int = 0,
     var isGameOver: Boolean = false,

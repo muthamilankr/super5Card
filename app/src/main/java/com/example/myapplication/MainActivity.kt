@@ -408,6 +408,8 @@ fun GameScreen(
 
     val selectedCards = remember { mutableStateListOf<Card>() }
     val mustDraw = state.pendingDroppedCard != null
+    // Is the current player the one required to draw the pending card?
+    val mustDrawForCurrentPlayer = state.pendingDroppedCard != null && state.pendingPlayerIndex == state.currentPlayerIndex
 
     LaunchedEffect(state.currentPlayerIndex) {
         selectedCards.clear()
@@ -446,7 +448,7 @@ fun GameScreen(
                     Text(
                         text = if (isMyTurn) state.statusMessage else "Waiting for ${currentPlayer.name}...",
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                        color = if (mustDraw) Color.Red else Color.White,
+                        color = if (mustDrawForCurrentPlayer && isMyTurn) Color.Red else Color.White,
                         fontWeight = FontWeight.Bold,
                         fontSize = 14.sp
                     )
@@ -471,9 +473,9 @@ fun GameScreen(
                             CardView(
                                 card = null,
                                 label = "DECK",
-                                isSelected = mustDraw && isMyTurn,
+                                isSelected = mustDrawForCurrentPlayer && isMyTurn,
                                 modifier = Modifier.zIndex(1f),
-                                onClick = { if (mustDraw && isMyTurn) onDraw(true) }
+                                onClick = { if (mustDrawForCurrentPlayer && isMyTurn) onDraw(true) }
                             )
                         }
                         Text("DECK", color = CardGold, fontSize = 10.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 16.dp))
@@ -485,8 +487,8 @@ fun GameScreen(
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         CardView(
                             card = state.discardPile.lastOrNull(),
-                            isSelected = mustDraw && isMyTurn,
-                            onClick = { if (mustDraw && isMyTurn) onDraw(false) }
+                            isSelected = mustDrawForCurrentPlayer && isMyTurn,
+                            onClick = { if (mustDrawForCurrentPlayer && isMyTurn) onDraw(false) }
                         )
                         Text("DISCARD", color = Color.White.copy(alpha = 0.5f), fontSize = 10.sp, fontWeight = FontWeight.Bold)
                     }
