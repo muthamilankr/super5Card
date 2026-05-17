@@ -18,6 +18,10 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -60,6 +64,7 @@ fun Rank.toDisplayString(): String = getRankLabel(this)
 class MainActivity : ComponentActivity() {
     private val viewModel: GameViewModel by viewModels()
 
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -69,6 +74,10 @@ class MainActivity : ComponentActivity() {
                 val state by viewModel.gameState.collectAsState()
                 val discoveredGames by viewModel.discoveredGames.collectAsState()
                 val connectedPlayers by viewModel.connectedPlayers.collectAsState()
+                
+                // Calculate window size class for responsive layout
+                val windowSizeClass = calculateWindowSizeClass(this@MainActivity)
+                val isTablet = windowSizeClass.widthSizeClass != WindowWidthSizeClass.Compact
 
                 Surface(modifier = Modifier.fillMaxSize(), color = DeepTable) {
                     when (appMode) {
