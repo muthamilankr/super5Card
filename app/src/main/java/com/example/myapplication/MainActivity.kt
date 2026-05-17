@@ -396,7 +396,15 @@ fun GameScreen(
 ) {
     val currentPlayer = state.players.getOrNull(state.currentPlayerIndex) ?: return
     val myPlayer = state.players.find { it.name == myPlayerName } ?: currentPlayer
-    val isMyTurn = currentPlayer.name == myPlayerName || state.players.size == state.players.count { it.name.startsWith("Player ") }
+    // Detect local pass-and-play: all players use default "Player" names and no network identity set.
+    val isLocalPassAndPlay = myPlayerName == "Player" && state.players.all { it.name.startsWith("Player") }
+    val isMyTurn = if (isLocalPassAndPlay) {
+        // On a shared device, the UI should allow interacting with the current player's hand.
+        true
+    } else {
+        // Networked mode: only the player whose name matches `myPlayerName` may act.
+        currentPlayer.name == myPlayerName
+    }
 
     val selectedCards = remember { mutableStateListOf<Card>() }
     val mustDraw = state.pendingDroppedCard != null
